@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 
-import './task.dart';
+import 'taskWidget.dart';
 import './button.dart';
 import './time.dart';
+import './tasks.dart';
 
 void main() {
   runApp(Randomizer());
@@ -17,16 +18,20 @@ class Randomizer extends StatefulWidget {
 }
 
 class _RandomizerState extends State<Randomizer> {
-  var _tasks = [
-    'SIH2020',
-    'Coursera',
-    'Nidarshan',
-    'Spyder',
-    'Robocon',
-    'ArduinoOS',
-  ];
+  var tasks = new TaskObj('empty');
 
-  var _timeToStudy = [
+  addTask() {
+    tasks.getTasks().remove('empty');
+    tasks.getTasks().join(', ');
+    tasks.addTask('SIH2020');
+    tasks.addTask('Coursera');
+    tasks.addTask('Nidarshan');
+    tasks.addTask('Spyder');
+    tasks.addTask('Robocon');
+    tasks.addTask('ArduinoOS');
+  }
+
+  var timeToStudy = [
     '1 hr',
     '30 min',
     '45 min',
@@ -41,13 +46,14 @@ class _RandomizerState extends State<Randomizer> {
   int _next(int min, int max) => min + _random.nextInt(max - min);
   void _randomEvent() {
     setState(() {
-      _taskIndex = _next(0, 6);
+      _taskIndex = _next(0, tasks.getSize());
       _timeIndex = _next(0, 5);
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    print(tasks.getTasks());
     return MaterialApp(
       theme: ThemeData(
         primaryColor: Colors.lightGreen,
@@ -70,10 +76,26 @@ class _RandomizerState extends State<Randomizer> {
         body: Column(
           children: <Widget>[
             Task(
-              _tasks[_taskIndex],
+              tasks.getTasks().elementAt(_taskIndex),
             ),
-            TimeToStudy(_timeToStudy[_timeIndex]),
+            TimeToStudy(timeToStudy[_timeIndex]),
             ButtonRandomize(_randomEvent),
+            Container(
+              width: 150.0,
+              child: RaisedButton(
+                padding: EdgeInsets.only(
+                  left: 10,
+                  right: 10,
+                ),
+                child: Text('Edit Tasks'),
+                color: Colors.lightGreen,
+                textColor: Colors.white,
+                shape: new RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(30.0),
+                ),
+                onPressed: addTask,
+              ),
+            )
           ],
         ),
       ),
