@@ -6,6 +6,7 @@ import 'randomizeButton.dart';
 import './time.dart';
 import './tasks.dart';
 import './editTasksButton.dart';
+import './times.dart';
 
 void main() {
   runApp(Randomizer());
@@ -28,7 +29,7 @@ class _RandomizerState extends State<Randomizer> {
   void _randomEvent() {
     setState(() {
       _taskIndex = _next(0, tasks.getSize());
-      _timeIndex = _next(0, 5);
+      _timeIndex = _next(0, times.getSize());
     });
   }
 
@@ -45,15 +46,18 @@ class _RandomizerState extends State<Randomizer> {
     tasks.addTask('ArduinoOS');
   }
 
-  //method block end
+  var times = new Times('empty');
 
-  var timeToStudy = [
-    '1 hr',
-    '30 min',
-    '45 min',
-    '2 hrs',
-    '1hr 30min',
-  ];
+  _addTime() {
+    times.getTimes().remove('empty');
+    times.getTimes().join(', ');
+    times.getTimes().add('1 hr');
+    times.getTimes().add('30 min');
+    times.getTimes().add('45 min');
+    times.getTimes().add('2 hrs');
+    times.getTimes().add('1 hr 30 min');
+  }
+  //method block end
 
   @override
   Widget build(BuildContext context) {
@@ -80,11 +84,14 @@ class _RandomizerState extends State<Randomizer> {
         body: Column(
           children: <Widget>[
             Task(
-              tasks.getTasks().elementAt(_taskIndex),
+              tasks.getTasks()[_taskIndex],
             ),
-            TimeToStudy(timeToStudy[_timeIndex]),
+            TimeToStudy(times.getTimes()[_timeIndex]),
             ButtonRandomize(_randomEvent),
-            ButtonEdit(_addTask),
+            ButtonEdit(() => {
+                  _addTask(),
+                  _addTime(),
+                }),
           ],
         ),
       ),
