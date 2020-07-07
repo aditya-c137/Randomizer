@@ -1,10 +1,6 @@
 class TaskObj {
   List<String> tasks = new List<String>();
 
-  TaskObj(String tasks) {
-    this.tasks.add(tasks);
-  }
-
   void addTask(String s) {
     this.tasks.add(s);
   }

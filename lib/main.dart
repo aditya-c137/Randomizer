@@ -7,6 +7,7 @@ import './time.dart';
 import './tasks.dart';
 import './editTasksButton.dart';
 import './times.dart';
+import './editPage.dart';
 
 void main() {
   runApp(Randomizer());
@@ -28,16 +29,14 @@ class _RandomizerState extends State<Randomizer> {
   int _next(int min, int max) => min + _random.nextInt(max - min);
   void _randomEvent() {
     setState(() {
-      _taskIndex = _next(0, tasks.getSize());
-      _timeIndex = _next(0, times.getSize());
+      _taskIndex = tasks.getSize() != 0 ? _next(0, tasks.getSize()) : 0;
+      _timeIndex = times.getSize() != 0 ? _next(0, times.getSize()) : 0;
     });
   }
 
-  var tasks = new TaskObj('empty');
+  var tasks = new TaskObj();
 
   _addTask() {
-    tasks.getTasks().remove('empty');
-    tasks.getTasks().join(', ');
     tasks.addTask('SIH2020');
     tasks.addTask('Coursera');
     tasks.addTask('Nidarshan');
@@ -46,11 +45,9 @@ class _RandomizerState extends State<Randomizer> {
     tasks.addTask('ArduinoOS');
   }
 
-  var times = new Times('empty');
+  var times = new Times();
 
   _addTime() {
-    times.getTimes().remove('empty');
-    times.getTimes().join(', ');
     times.getTimes().add('1 hr');
     times.getTimes().add('30 min');
     times.getTimes().add('45 min');
@@ -84,9 +81,11 @@ class _RandomizerState extends State<Randomizer> {
         body: Column(
           children: <Widget>[
             Task(
-              tasks.getTasks()[_taskIndex],
+              tasks.getSize() != 0 ? tasks.getTasks()[_taskIndex] : 'empty',
             ),
-            TimeToStudy(times.getTimes()[_timeIndex]),
+            TimeToStudy(
+              times.getSize() != 0 ? times.getTimes()[_timeIndex] : 'empty',
+            ),
             ButtonRandomize(_randomEvent),
             ButtonEdit(() => {
                   _addTask(),
