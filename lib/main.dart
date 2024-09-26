@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 
-import './task.dart';
-import './button.dart';
+import 'taskWidget.dart';
+import 'randomizeButton.dart';
 import './time.dart';
+import './tasks.dart';
+import './editTasksButton.dart';
+import './times.dart';
+import './editPage.dart';
 
 void main() {
   runApp(Randomizer());
@@ -17,23 +21,7 @@ class Randomizer extends StatefulWidget {
 }
 
 class _RandomizerState extends State<Randomizer> {
-  var _tasks = [
-    'SIH2020',
-    'Coursera',
-    'Nidarshan',
-    'Spyder',
-    'Robocon',
-    'ArduinoOS',
-  ];
-
-  var _timeToStudy = [
-    '1 hr',
-    '30 min',
-    '45 min',
-    '2 hrs',
-    '1hr 30min',
-  ];
-
+  //method block
   var _taskIndex = 0;
   var _timeIndex = 0;
   var _random = new Random();
@@ -41,13 +29,36 @@ class _RandomizerState extends State<Randomizer> {
   int _next(int min, int max) => min + _random.nextInt(max - min);
   void _randomEvent() {
     setState(() {
-      _taskIndex = _next(0, 6);
-      _timeIndex = _next(0, 5);
+      _taskIndex = tasks.getSize() != 0 ? _next(0, tasks.getSize()) : 0;
+      _timeIndex = times.getSize() != 0 ? _next(0, times.getSize()) : 0;
     });
   }
 
+  var tasks = new TaskObj();
+
+  _addTask() {
+    tasks.addTask('SIH2020');
+    tasks.addTask('Coursera');
+    tasks.addTask('Nidarshan');
+    tasks.addTask('Spyder');
+    tasks.addTask('Robocon');
+    tasks.addTask('ArduinoOS');
+  }
+
+  var times = new Times();
+
+  _addTime() {
+    times.getTimes().add('1 hr');
+    times.getTimes().add('30 min');
+    times.getTimes().add('45 min');
+    times.getTimes().add('2 hrs');
+    times.getTimes().add('1 hr 30 min');
+  }
+  //method block end
+
   @override
   Widget build(BuildContext context) {
+    print(tasks.getTasks());
     return MaterialApp(
       theme: ThemeData(
         primaryColor: Colors.lightGreen,
@@ -70,10 +81,16 @@ class _RandomizerState extends State<Randomizer> {
         body: Column(
           children: <Widget>[
             Task(
-              _tasks[_taskIndex],
+              tasks.getSize() != 0 ? tasks.getTasks()[_taskIndex] : 'empty',
             ),
-            TimeToStudy(_timeToStudy[_timeIndex]),
+            TimeToStudy(
+              times.getSize() != 0 ? times.getTimes()[_timeIndex] : 'empty',
+            ),
             ButtonRandomize(_randomEvent),
+            ButtonEdit(() => {
+                  _addTask(),
+                  _addTime(),
+                }),
           ],
         ),
       ),
